@@ -1,0 +1,140 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --color-primary-50: #ebf8f2;
+  --color-primary-100: #d0efe2;
+  --color-primary-200: #a4dfc8;
+  --color-primary-300: #6dc8a8;
+  --color-primary-400: #38ad87;
+  --color-primary-500: #16966f;
+  --color-primary-600: #05805f;
+  --color-primary-700: #04694e;
+  --color-primary-800: #075540;
+  --color-primary-900: #084636;
+  --color-primary-950: #03271e;
+
+  /* Deep teal-navy used by the dashboard sidebar and the auth panel. */
+  --color-night-950: #04141a;
+  --color-night-900: #071c23;
+  --color-night-800: #0c2a32;
+  --color-night-700: #143841;
+  --color-night-600: #1e4a54;
+
+  --color-mint: #6fdcb0;
+
+  --color-ink: #101828;
+  --color-ink-soft: #475467;
+  --color-ink-muted: #667085;
+
+  --color-surface: #f4f7f9;
+  --color-line: #e4e9ee;
+
+  --shadow-soft: 0 1px 2px rgb(16 24 40 / 0.04), 0 4px 16px -4px rgb(16 24 40 / 0.07);
+  --shadow-lift: 0 2px 4px rgb(16 24 40 / 0.04), 0 16px 40px -12px rgb(16 24 40 / 0.18);
+  --shadow-glow: 0 10px 30px -10px rgb(5 128 95 / 0.55);
+
+  --animate-fade-in: fade-in 0.25s ease-out both;
+  --animate-scale-in: scale-in 0.2s ease-out both;
+  --animate-slide-in: slide-in 0.25s ease-out both;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes scale-in {
+    from { opacity: 0; transform: scale(0.96); }
+    to { opacity: 1; transform: scale(1); }
+  }
+  @keyframes slide-in {
+    from { transform: translateX(-100%); }
+    to { transform: translateX(0); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+}
+
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    scroll-behavior: smooth;
+  }
+  body {
+    @apply bg-white font-sans text-ink;
+  }
+  ::selection {
+    @apply bg-primary-100 text-primary-900;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-primary-600;
+  }
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@layer components {
+  .container-page {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-ink;
+  }
+  .field {
+    @apply block w-full rounded-xl border border-line bg-white px-3.5 py-2.5 text-sm text-ink shadow-xs transition
+      placeholder:text-ink-muted/70
+      hover:border-slate-300
+      focus:border-primary-500 focus:ring-4 focus:ring-primary-100 focus:outline-none
+      disabled:cursor-not-allowed disabled:bg-surface disabled:text-ink-muted;
+  }
+  .field-error {
+    @apply border-red-400 focus:border-red-500 focus:ring-red-100;
+  }
+  .card {
+    @apply rounded-2xl border border-line bg-white shadow-soft;
+  }
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+  .bg-grid {
+    background-image:
+      linear-gradient(to right, rgb(5 128 95 / 0.06) 1px, transparent 1px),
+      linear-gradient(to bottom, rgb(5 128 95 / 0.06) 1px, transparent 1px);
+    background-size: 44px 44px;
+  }
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  /* When a .print-area exists, print only that element (e.g. the QR table card). */
+  body:has(.print-area) * {
+    visibility: hidden;
+  }
+  body:has(.print-area) .print-area,
+  body:has(.print-area) .print-area * {
+    visibility: visible;
+  }
+  body:has(.print-area) .print-area {
+    position: fixed;
+    top: 2cm;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 12cm;
+    max-width: none;
+    box-shadow: none;
+    border: 1px solid #e7e9ee;
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
