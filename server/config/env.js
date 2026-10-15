@@ -17,6 +17,14 @@ const bool = (fallback) =>
     .optional()
     .transform((value) => (value === undefined ? fallback : value === 'true' || value === '1'))
 
+// On Vercel the API is a serverless function behind Vercel's proxy, on the same domain as the
+// frontend (see vercel.json), so these defaults need no extra variables there.
+const onVercel = Boolean(process.env.VERCEL)
+const vercelOrigins = ['VERCEL_PROJECT_PRODUCTION_URL', 'VERCEL_BRANCH_URL', 'VERCEL_URL']
+  .map((name) => process.env[name])
+  .filter(Boolean)
+  .map((host) => `https://${host}`)
+
 const optionalString = z
   .string()
   .trim()
@@ -24,7 +32,7 @@ const optionalString = z
   .transform((value) => value || undefined)
 
 const schema = z.object({
-  NODE_ENV: z.enum(['development', 'production', 'test']).default('development'),
+  NODE_ENV: z.enum(['development', 'production', 'test']).default(onVercel ? 'production' : 'development'),
   PORT: z.coerce.number().int().positive().default(5000),
   MONGODB_URI: z.string().trim().min(1, 'MONGODB_URI is required'),
 
@@ -35,7 +43,7 @@ const schema = z.object({
   COOKIE_SAMESITE: z.enum(['lax', 'strict', 'none']).default('lax'),
   COOKIE_SECURE: optionalString,
   COOKIE_DOMAIN: optionalString,
-  TRUST_PROXY: z.coerce.number().int().min(0).default(0),
+  TRUST_PROXY: z.coerce.number().int().min(0).default(onVercel ? 1 : 0),
   JSON_BODY_LIMIT: z.string().default('2mb'),
 
   TRIAL_DAYS: z.coerce.number().int().min(0).max(60).default(7),
@@ -90,9 +98,14 @@ export const config = {
     secret: env.JWT_SECRET,
     expiresDays: env.JWT_EXPIRES_DAYS,
   },
-  clientOrigins: env.CLIENT_ORIGINS.split(',')
-    .map((origin) => origin.trim().replace(/\/+$/, ''))
-    .filter(Boolean),
+  clientOrigins: [
+    ...new Set([
+      ...env.CLIENT_ORIGINS.split(',')
+        .map((origin) => origin.trim().replace(/\/+$/, ''))
+        .filter(Boolean),
+      ...vercelOrigins,
+    ]),
+  ],
   cookies: {
     sameSite: env.COOKIE_SAMESITE,
     secure: cookieSecure,

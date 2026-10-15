@@ -161,6 +161,10 @@ Check it is running: `curl http://localhost:5000/api/health` → `{"status":"ok"
 
 ## 7. Deploying
 
+**Vercel (recommended):** the repo deploys as one project, with the frontend and this API on the same domain. Setup steps are in the [root README](../README.md#deploy-on-vercel-frontend--api-in-one-project). There the API runs through `serverless.js` instead of `server.js`.
+
+On any other host:
+
 1. Serve the API over **HTTPS** and set `NODE_ENV=production`. The server refuses to start without secure cookies in production.
 2. Set `TRUST_PROXY=1` behind Render/Railway/Heroku/Nginx so rate limits see real client IPs.
 3. Set `CLIENT_ORIGINS=https://app.your-domain.com`.

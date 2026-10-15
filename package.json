@@ -1,0 +1,13 @@
+{
+  "name": "menuo",
+  "private": true,
+  "description": "Menuo monorepo: React app in client/, Express API in server/, deployed together on Vercel",
+  "type": "module",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "install:all": "npm ci --prefix client && npm ci --prefix server",
+    "build": "npm run build --prefix client"
+  }
+}

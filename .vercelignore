@@ -1,0 +1,10 @@
+# Keeps `vercel deploy` from the CLI from uploading local installs, builds and secrets.
+node_modules
+.vercel
+client/dist
+.env
+.env.local
+.env.*.local
+server/.env.*
+!server/.env.example
+server/coverage
